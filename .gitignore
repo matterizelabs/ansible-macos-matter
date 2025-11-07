@@ -1,0 +1,27 @@
+# Ansible
+*.retry
+ansible.log
+.ansible/
+
+# Ansible facts cache
+/tmp/ansible_facts
+
+# Python
+*.pyc
+__pycache__/
+venv/
+.venv/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editor files
+*.swp
+*.swo
+*~
+
+# Temporary files
+*.tmp
+.tmp/
