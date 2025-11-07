@@ -1,0 +1,161 @@
+---
+# Main variables file for Android Studio with Matter SDK setup
+# Customize these values according to your preferences
+
+# ==========================================
+# System Configuration
+# ==========================================
+
+# SSH Connection Configuration
+# For local execution (default): host = localhost, user = current user
+# For remote execution: export MACOS_HOST="remote-host" and MACOS_SSH_USER="remote-user"
+macos_host: "{{ lookup('env', 'MACOS_HOST') | default('localhost', true) }}"
+macos_ssh_user: "{{ lookup('env', 'MACOS_SSH_USER') | default(ansible_user_id, true) }}"
+macos_ssh_key_path: "{{ lookup('env', 'MACOS_SSH_KEY') | default('~/.ssh/id_rsa', true) }}"
+
+# Homebrew prefix varies by architecture
+homebrew_prefix: "{{ '/opt/homebrew' if ansible_architecture == 'arm64' else '/usr/local' }}"
+
+# User's home directory
+user_home: "{{ ansible_env.HOME }}"
+
+# Determine shell configuration file
+shell_config_file: "{{ user_home }}/.zshrc"
+
+# ==========================================
+# Java Configuration
+# ==========================================
+
+java_version: "17"
+java_package: "openjdk@{{ java_version }}"
+
+# ==========================================
+# Android Studio Configuration
+# ==========================================
+
+# Android Studio installation
+android_studio_cask: "android-studio"
+android_studio_app_path: "/Applications/Android Studio.app"
+
+# Android SDK configuration
+android_home: "{{ user_home }}/Library/Android/sdk"
+android_sdk_root: "{{ android_home }}"
+
+# Android SDK components to install
+android_sdk_api_levels:
+  - "33"  # Android 13 (Tiramisu)
+  - "34"  # Android 14 (Upside Down Cake)
+
+android_build_tools_version: "34.0.0"
+
+# Android SDK command-line tools
+android_cmdline_tools_version: "latest"
+
+# Emulator configuration
+install_emulator: true
+android_emulator_system_image: "system-images;android-34;google_apis;{{ 'arm64-v8a' if ansible_architecture == 'arm64' else 'x86_64' }}"
+
+# Android NDK configuration
+android_ndk_version: "28.2.13676358"
+android_ndk_home: "{{ user_home }}/Library/Android/sdk/ndk/{{ android_ndk_version }}"
+
+# ==========================================
+# Kotlin Configuration
+# ==========================================
+
+kotlin_version: "2.1.10"
+
+# ==========================================
+# Matter SDK Configuration
+# ==========================================
+
+# Matter SDK repository
+matter_sdk_repo: "https://github.com/project-chip/connectedhomeip.git"
+matter_sdk_version: "master"  # Can be a specific tag like 'v1.0.0'
+matter_sdk_path: "{{ user_home }}/Development/matter-sdk"
+
+# Python configuration for Matter
+python_version: "3.11"
+matter_python_packages:
+  - name: "wheel"
+  - name: "pip"
+    state: "latest"
+  - name: "cryptography"
+  - name: "pycrypto"
+  - name: "pyobjc-core"
+  - name: "pyobjc-framework-corebluetooth"
+  - name: "mobly"
+  - name: "coloredlogs"
+
+# Matter build dependencies (via Homebrew)
+matter_brew_packages:
+  - "cmake"
+  - "ninja"
+  - "pkg-config"
+  - "openssl@3"
+  - "libusb"
+  - "glib"
+  - "pixman"
+  - "qemu"
+
+# ==========================================
+# Development Tools
+# ==========================================
+
+# Essential development tools
+development_brew_packages:
+  - "git"
+  - "git-lfs"
+  - "wget"
+  - "curl"
+  - "jq"
+  - "tree"
+
+# ==========================================
+# Project Structure
+# ==========================================
+
+# Project directories
+development_root: "{{ user_home }}/Development"
+android_projects_dir: "{{ development_root }}/AndroidProjects"
+matter_projects_dir: "{{ development_root }}/MatterProjects"
+
+# Create these directories
+project_directories:
+  - "{{ development_root }}"
+  - "{{ android_projects_dir }}"
+  - "{{ matter_projects_dir }}"
+
+# ==========================================
+# Environment Variables
+# ==========================================
+
+# Environment variables to add to shell configuration
+environment_variables:
+  ANDROID_HOME: "{{ android_home }}"
+  ANDROID_SDK_ROOT: "{{ android_sdk_root }}"
+  ANDROID_NDK_HOME: "{{ android_ndk_home }}"
+  MATTER_SDK_ROOT: "{{ matter_sdk_path }}"
+  JAVA_HOME: "{{ homebrew_prefix }}/opt/{{ java_package }}/libexec/openjdk.jdk/Contents/Home"
+
+# PATH additions
+path_additions:
+  - "{{ android_home }}/platform-tools"
+  - "{{ android_home }}/cmdline-tools/latest/bin"
+  - "{{ android_home }}/emulator"
+  - "{{ android_ndk_home }}"
+  - "{{ matter_sdk_path }}/out/standalone"
+  - "{{ homebrew_prefix }}/opt/kotlin/bin"
+  - "{{ homebrew_prefix }}/opt/{{ java_package }}/bin"
+
+# ==========================================
+# Validation Settings
+# ==========================================
+
+# SDK manager license acceptance
+# Note: Users must manually accept licenses via: sdkmanager --licenses
+accept_licenses_notice: true
+
+# Validation timeouts (in seconds)
+git_clone_timeout: 600  # 10 minutes for Matter SDK clone with --depth 1
+matter_bootstrap_timeout: 3600  # 1 hour for Matter bootstrap

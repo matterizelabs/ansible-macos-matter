@@ -1,0 +1,129 @@
+---
+# Main playbook for setting up Android Studio with Matter SDK on macOS
+# This playbook is run from Arch Linux and configures a remote macOS machine at 20.20.20.201
+#
+# Usage:
+#   ansible-playbook setup-android-matter.yml
+#
+# Optional tags for selective execution:
+#   --tags "android" - Only Android Studio setup
+#   --tags "matter" - Only Matter SDK setup
+#   --tags "tools" - Only development tools
+#   --tags "config" - Only configuration tasks
+
+- name: Setup Android Studio with Matter SDK on remote macOS
+  hosts: macos_target
+
+  vars_files:
+    - vars/main.yml
+
+  pre_tasks:
+    - name: Verify SSH connection to macOS target
+      ansible.builtin.debug:
+        msg:
+          - "Connecting to macOS at {{ inventory_hostname }}"
+          - "SSH User: {{ ansible_user }}"
+      tags: always
+
+    - name: Verify running on macOS
+      ansible.builtin.fail:
+        msg: "This playbook is designed for macOS only. Detected OS: {{ ansible_os_family }}"
+      when: ansible_os_family != "Darwin"
+      tags: always
+
+    - name: Display system information
+      ansible.builtin.debug:
+        msg:
+          - "OS: macOS {{ ansible_distribution_version }}"
+          - "Architecture: {{ ansible_architecture }}"
+          - "User: {{ ansible_user_id }}"
+          - "Home Directory: {{ ansible_env.HOME }}"
+          - "Control Machine: Arch Linux ({{ inventory_hostname }})"
+      tags: always
+
+    - name: Ensure Homebrew is installed
+      ansible.builtin.stat:
+        path: "{{ homebrew_prefix }}/bin/brew"
+      register: homebrew_check
+      failed_when: not homebrew_check.stat.exists
+      tags: always
+
+  roles:
+    - role: development-tools
+      tags: [tools, development-tools]
+
+    - role: java
+      tags: [java, kotlin]
+
+    - role: android-studio
+      tags: [android, android-studio]
+
+    - role: android-sdk
+      tags: [android, android-sdk]
+
+    - role: android-ndk
+      tags: [android, android-ndk]
+
+    - role: matter-sdk
+      tags: [matter, matter-sdk]
+
+    - role: matter-android-app
+      tags: [matter, matter-android-app, app]
+
+    - role: project-setup
+      tags: [project, project-setup]
+
+    - role: shell-config
+      tags: [config, environment, shell-config]
+
+    - role: helper-scripts
+      tags: [helpers, scripts, utilities]
+
+    - role: documentation
+      tags: [documentation, docs]
+
+    - role: verification
+      tags: [verification, validate]
+
+  post_tasks:
+    - name: Display setup completion summary
+      ansible.builtin.debug:
+        msg:
+          - "========================================"
+          - "Android Studio with Matter SDK Setup Complete!"
+          - "========================================"
+          - ""
+          - "Next Steps:"
+          - "1. Restart your terminal or run: source {{ shell_config_file }}"
+          - "2. Verify Android Studio: open {{ android_studio_app_path }}"
+          - "3. Verify Matter SDK: cd {{ matter_sdk_path }} && git status"
+          - "4. Check environment variables: echo $ANDROID_HOME"
+          - ""
+          - "Matter Android App (CHIPTool):"
+          - "  - Built at: {{ matter_sdk_path }}/examples/android/CHIPTool"
+          - "  - APK: app/build/outputs/apk/debug/app-debug.apk"
+          - "  - Install: adb install -r [APK_PATH]"
+          - "  - Or: cd [PROJECT_PATH] && ./gradlew installDebug"
+          - ""
+          - "Development Directories:"
+          - "  - Android Projects: {{ android_projects_dir }}"
+          - "  - Matter Projects: {{ matter_projects_dir }}"
+          - "  - Matter SDK: {{ matter_sdk_path }}"
+          - ""
+          - "Installed Tools:"
+          - "  - Android Studio (with SDK)"
+          - "  - Android NDK {{ android_ndk_version }}"
+          - "  - Kotlin {{ kotlin_version }}"
+          - "  - Matter SDK with Android app example"
+          - "  - Java {{ java_version }}"
+          - "  - Python 3 with Matter packages"
+          - "  - Git and development utilities"
+          - ""
+          - "Environment Variables:"
+          - "  - ANDROID_HOME: {{ android_home }}"
+          - "  - ANDROID_NDK_HOME: {{ android_ndk_home }}"
+          - "  - JAVA_HOME: (configured in shell)"
+          - ""
+          - "Run 'android-studio-doctor' to verify installation"
+          - "========================================"
+      tags: always
