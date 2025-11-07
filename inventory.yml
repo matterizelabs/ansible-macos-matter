@@ -1,0 +1,16 @@
+---
+# Inventory file for Android Studio with Matter SDK setup on macOS
+# Default: Local execution (localhost)
+# Remote: Set MACOS_HOST and MACOS_SSH_USER environment variables
+
+all:
+  hosts:
+    macos_target:
+      ansible_host: "{{ macos_host }}"
+      ansible_user: "{{ macos_ssh_user }}"
+      ansible_ssh_private_key_file: "{{ macos_ssh_key_path }}"
+      ansible_python_interpreter: /usr/bin/python3
+      # Connection settings
+      ansible_ssh_common_args: "-o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=~/.ssh/known_hosts"
+      # For Homebrew prefix detection
+      ansible_become: false
