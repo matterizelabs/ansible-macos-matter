@@ -21,8 +21,8 @@ pkgs.mkShell {
   ];
 
   shellHook = ''
-    export MACOS_HOST=${MACOS_HOST:-192.168.10.2}
-    export MACOS_SSH_USER=${MACOS_SSH_USER:-user}
+    export MACOS_HOST=''${MACOS_HOST:-192.168.10.2}
+    export MACOS_SSH_USER=''${MACOS_SSH_USER:-user}
 
     echo "Ansible development environment loaded"
     echo "MACOS_HOST=$MACOS_HOST"
