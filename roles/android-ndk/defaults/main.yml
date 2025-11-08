@@ -1,0 +1,6 @@
+---
+# Android NDK default variables
+
+# Android NDK configuration
+android_ndk_version: "28.2.13676358"
+android_ndk_home: "{{ user_home }}/Library/Android/sdk/ndk/{{ android_ndk_version }}"

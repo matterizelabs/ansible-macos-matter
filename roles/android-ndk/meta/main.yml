@@ -1,0 +1,24 @@
+---
+galaxy_info:
+  author: abu-matterize
+  description: Install and configure Android NDK (Native Development Kit)
+  company: Development
+  license: MIT
+  min_ansible_version: 2.9
+
+  platforms:
+    - name: macOS
+      versions:
+        - "11.0"
+        - "12.0"
+        - "13.0"
+        - "14.0"
+
+  galaxy_tags:
+    - android
+    - android-ndk
+    - ndk
+    - native-development
+
+dependencies:
+  - role: android-sdk
