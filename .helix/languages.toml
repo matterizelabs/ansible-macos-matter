@@ -1,0 +1,21 @@
+[[language]]
+name = "ansible"
+scope = "source.yaml"
+file-types = ["yml", "yaml"]
+roots = []
+comment-token = "#"
+indent = { tab-width = 2, unit = "  " }
+language-servers = [ "ansible-lsp", "yaml-lsp" ]
+injection-regex = "yml|yaml"
+
+[language-server.ansible-lsp]
+command = "ansible-language-server"
+args = ["--stdio"]
+
+[language-server.yaml-lsp]
+command = "yaml-language-server"
+args = ["--stdio"]
+
+[[grammar]]
+name = "ansible"
+source = { git = "https://github.com/ikatyang/tree-sitter-yaml", rev = "0e36bed171768908f331ff7dff9d956bae016efb" }
