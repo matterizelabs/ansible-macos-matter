@@ -1,0 +1,28 @@
+theme = "github_dark_tritanopia"
+
+[editor]
+true-color = true
+shell = ['/bin/zsh','-c']
+[editor.lsp]
+display-messages = true
+display-inlay-hints = true
+
+[editor.cursor-shape]
+insert = 'bar'
+normal = 'block'
+
+[editor.statusline]
+left = ["mode", "spinner", "file-name", "file-type", "total-line-numbers", "file-encoding"]
+center = []
+right = ["selections", "primary-selection-length", "position", "position-percentage", "spacer", "diagnostics", "workspace-diagnostics", "version-control"]
+
+[editor.indent-guides]
+render = true
+character = "▏"
+
+[editor.gutters]
+layout  = ['line-numbers', 'spacer']
+
+[editor.gutters.line-numbers]
+min-width = 3
+
